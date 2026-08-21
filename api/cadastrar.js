@@ -18,9 +18,9 @@ export default async function handler(req, res) {
   try {
     await ensureTable();
 
-    const { email, senha } = req.body;
+    const { email, senhaB } = req.body;
 
-    if ( !email || !senha) {
+    if ( !email || !senhaB) {
       return res.status(400).json({ sucesso: false, mensagem: 'Preencha todos os campos.' });
     }
 
@@ -30,7 +30,7 @@ export default async function handler(req, res) {
       return res.status(409).json({ sucesso: false, mensagem: 'E-mail já cadastrado.' });
     }
 
-    const senha = await (senha, 10);
+    //const senha = await (senha, 10);
 
     await sql`INSERT INTO usuarios ( email, senha) VALUES ( ${email}, ${senha})`;
 
