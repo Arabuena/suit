@@ -133,17 +133,13 @@
     </div> 
 
     <script>
-        function mostrarMsg(texto, tipo) {
-            const msg = document.getElementById('msg');
-            msg.textContent = texto;
-            msg.className = 'msg ' + tipo;
-        }
-
-        async function fazerCadastro(e) {
+       async function fazerCadastro(e) {
     e.preventDefault();
 
-    const email = document.getElementById('cad-email').value;
-    const nome = document.getElementById('cad-nome').value;
+    const email = document.getElementById('cad-email').value.trim();
+    const nome = document.getElementById('cad-nome').value.trim();
+
+    console.log('Enviando:', { email, nome });
 
     try {
         const resp = await fetch('/api/cadastrar', {
@@ -151,10 +147,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                email,
-                nome
-            })
+            body: JSON.stringify({ email, nome })
         });
 
         const dados = await resp.json();
@@ -170,6 +163,7 @@
         }
 
     } catch (err) {
+        console.error(err);
         mostrarMsg('Erro ao conectar com o servidor.', 'erro');
     }
 }

@@ -9,9 +9,11 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { email, senha } = req.body || {};
+        const { email, nome } = req.body || {};
 
-        if (!email || !senha) {
+        console.log('Recebido:', { email, nome });
+
+        if (!email || !nome) {
             return res.status(400).json({
                 sucesso: false,
                 mensagem: 'Preencha todos os campos.'
@@ -33,13 +35,13 @@ export default async function handler(req, res) {
 
         await usuarios.insertOne({
             email,
-            senha,
+            nome,
             criado_em: new Date()
         });
 
         return res.status(201).json({
             sucesso: true,
-            mensagem: 'Login realizado'
+            mensagem: 'Logado com sucesso!'
         });
 
     } catch (err) {
