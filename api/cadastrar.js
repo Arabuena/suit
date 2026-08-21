@@ -39,7 +39,7 @@ export default async function handler(req, res) {
 
         return res.status(201).json({
             sucesso: true,
-            mensagem: 'Cadastro realizado com sucesso!'
+            mensagem: 'Login realizado'
         });
 
     } catch (err) {

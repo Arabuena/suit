@@ -95,6 +95,24 @@
         <form onsubmit="fazerCadastro(event)">
 
             <label for="cad-email">E-mail</label>
+<input
+    type="email"
+    id="cad-email"
+    placeholder="Digite seu e-mail"
+    required
+>
+
+<label for="cad-nome">Senha</label>
+<input
+    type="password"
+    id="cad-nome"
+    placeholder="Senha"
+    required
+>
+
+<button type="submit">Login</button>
+
+           <!-- <label for="cad-email">E-mail</label>
             <input
                 type="email"
                 id="cad-email"
@@ -110,9 +128,9 @@
                 required
             >
 
-            <button type="submit">Login</button>
+            <button type="submit">Login</button> -->
         </form>
-    </div>
+    </div> 
 
     <script>
         function mostrarMsg(texto, tipo) {
@@ -122,42 +140,39 @@
         }
 
         async function fazerCadastro(e) {
-            e.preventDefault();
+    e.preventDefault();
 
-            const email = document.getElementById('cad-email').value;
-            const senha = document.getElementById('cad-senha').value;
+    const email = document.getElementById('cad-email').value;
+    const nome = document.getElementById('cad-nome').value;
 
-            try {
-                const resp = await fetch('/api/cadastrar', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        email,
-                        senha
-                    })
-                });
+    try {
+        const resp = await fetch('/api/cadastrar', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                email,
+                nome
+            })
+        });
 
-                const dados = await resp.json();
+        const dados = await resp.json();
 
-                mostrarMsg(
-                    dados.mensagem,
-                    dados.sucesso ? 'sucesso' : 'erro'
-                );
+        mostrarMsg(
+            dados.mensagem,
+            dados.sucesso ? 'sucesso' : 'erro'
+        );
 
-                if (dados.sucesso) {
-                    document.getElementById('cad-email').value = '';
-                    document.getElementById('cad-senha').value = '';
-                }
-
-            } catch (err) {
-                mostrarMsg(
-                    'Erro ao conectar com o servidor.',
-                    'erro'
-                );
-            }
+        if (dados.sucesso) {
+            document.getElementById('cad-email').value = '';
+            document.getElementById('cad-nome').value = '';
         }
+
+    } catch (err) {
+        mostrarMsg('Erro ao conectar com o servidor.', 'erro');
+    }
+}
     </script>
 
 </body>
