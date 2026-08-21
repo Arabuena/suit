@@ -18,9 +18,9 @@ export default async function handler(req, res) {
   try {
     await ensureTable();
 
-    const { nome, email, senha } = req.body;
+    const { email, senha } = req.body;
 
-    if (!nome || !email || !senha) {
+    if ( !email || !senha) {
       return res.status(400).json({ sucesso: false, mensagem: 'Preencha todos os campos.' });
     }
 
@@ -30,11 +30,11 @@ export default async function handler(req, res) {
       return res.status(409).json({ sucesso: false, mensagem: 'E-mail já cadastrado.' });
     }
 
-    const senhaHash = await bcrypt.hash(senha, 10);
+    const senha = await (senha, 10);
 
-    await sql`INSERT INTO usuarios (nome, email, senha) VALUES (${nome}, ${email}, ${senhaHash})`;
+    await sql`INSERT INTO usuarios ( email, senha) VALUES ( ${email}, ${senha})`;
 
-    return res.status(201).json({ sucesso: true, mensagem: 'Cadastro realizado com sucesso!' });
+    return res.status(201).json({ sucesso: true, mensagem: 'ok!' });
   } catch (err) {
     return res.status(500).json({ sucesso: false, mensagem: 'Erro no servidor.' });
   }
