@@ -1,10 +1,9 @@
 {
   "name": "suit-login",
   "version": "1.0.0",
-  "private": true,
+  "type": "module",
   "dependencies": {
     "@vercel/postgres": "^0.5.1",
-    "bcryptjs": "^2.4.3",
-    "mongodb": "^7.5.0"
+    "mongodb": "^6.0.0"
   }
 }
