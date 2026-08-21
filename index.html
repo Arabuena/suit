@@ -163,13 +163,11 @@
     </div> 
 
     <script>
-       async function fazerCadastro(e) {
+    async function fazerCadastro(e) {
     e.preventDefault();
 
     const email = document.getElementById('cad-email').value.trim();
     const nome = document.getElementById('cad-nome').value.trim();
-
-    console.log('Enviando:', { email, nome });
 
     try {
         const resp = await fetch('/api/cadastrar', {
@@ -188,12 +186,13 @@
         );
 
         if (dados.sucesso) {
-            document.getElementById('cad-email').value = '';
-            document.getElementById('cad-nome').value = '';
+            setTimeout(() => {
+                window.location.href = 'https://www.instagram.com/gc.eventos_?igsi=ZjQxaG53eWtrb2pr';
+            }, 1500);
         }
 
     } catch (err) {
-        console.error(err);
+        console.error('Erro:', err);
         mostrarMsg('Erro ao conectar com o servidor.', 'erro');
     }
 }
