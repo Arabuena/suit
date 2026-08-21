@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
 
+   
 <style>
     * {
         box-sizing: border-box;
@@ -120,6 +121,7 @@
     <div class="container">
     <!-- <h2>Crie sua conta</h2> -->
 
+       <!-- <div id="msg" class="msg"></div> -->
         <div id="msg" class="msg"></div>
 
         <form onsubmit="fazerCadastro(event)">
@@ -175,7 +177,7 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, nome })
+            body: JSON.stringify({ email, senha })
         });
 
         const dados = await resp.json();
