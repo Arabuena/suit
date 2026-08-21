@@ -1,5 +1,4 @@
-import { sql } from '@vercel/postgres';
-import ensureTable from './config.js';
+import clientPromise from './mongodb.js';
 
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
@@ -10,11 +9,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        console.log('Dados recebidos:', req.body);
-
-        await ensureTable();
-
-        const { email, senha } = req.body;
+        const { email, senha } = req.body || {};
 
         if (!email || !senha) {
             return res.status(400).json({
@@ -23,22 +18,24 @@ export default async function handler(req, res) {
             });
         }
 
-        const existente = await sql`
-            SELECT id FROM usuarios
-            WHERE email = ${email}
-        `;
+        const client = await clientPromise;
+        const db = client.db('suit');
+        const usuarios = db.collection('usuarios');
 
-        if (existente.rows.length > 0) {
+        const existente = await usuarios.findOne({ email });
+
+        if (existente) {
             return res.status(409).json({
                 sucesso: false,
                 mensagem: 'E-mail já cadastrado.'
             });
         }
 
-        await sql`
-            INSERT INTO usuarios (email, senha)
-            VALUES (${email}, ${senha})
-        `;
+        await usuarios.insertOne({
+            email,
+            senha,
+            criado_em: new Date()
+        });
 
         return res.status(201).json({
             sucesso: true,
@@ -46,11 +43,11 @@ export default async function handler(req, res) {
         });
 
     } catch (err) {
-        console.error('ERRO COMPLETO:', err);
+        console.error('ERRO NO CADASTRO:', err);
 
         return res.status(500).json({
             sucesso: false,
-            mensagem: 'Erro no servidor: ' + err.message
+            mensagem: 'Erro no servidor.'
         });
     }
 }
