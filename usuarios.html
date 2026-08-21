@@ -1,9 +1,3 @@
-<?php
-require_once 'config.php';
-
-$stmt = $pdo->query("SELECT id, nome, email, criado_em FROM usuarios ORDER BY criado_em DESC");
-$usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -82,34 +76,39 @@ $usuarios = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <body>
     <div class="container">
         <h2>Usuários Cadastrados</h2>
-        <p class="counter"><?= count($usuarios) ?> usuário(s) encontrado(s)</p>
-
-        <?php if (count($usuarios) > 0): ?>
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Nome</th>
-                    <th>E-mail</th>
-                    <th>Cadastro</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($usuarios as $u): ?>
-                <tr>
-                    <td><?= $u['id'] ?></td>
-                    <td><?= htmlspecialchars($u['nome']) ?></td>
-                    <td><?= htmlspecialchars($u['email']) ?></td>
-                    <td><?= date('d/m/Y H:i', strtotime($u['criado_em'])) ?></td>
-                </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-        <?php else: ?>
-        <p class="empty">Nenhum usuário cadastrado ainda.</p>
-        <?php endif; ?>
-
+        <p class="counter" id="counter">Carregando...</p>
+        <div id="tabela"></div>
         <a href="suit.html" class="voltar">Voltar ao Login</a>
     </div>
+
+    <script>
+        async function carregarUsuarios() {
+            try {
+                const resp = await fetch('/api/usuarios');
+                const dados = await resp.json();
+
+                if (!dados.sucesso || dados.usuarios.length === 0) {
+                    document.getElementById('counter').textContent = '0 usuário(s) encontrado(s)';
+                    document.getElementById('tabela').innerHTML = '<p class="empty">Nenhum usuário cadastrado ainda.</p>';
+                    return;
+                }
+
+                document.getElementById('counter').textContent = dados.usuarios.length + ' usuário(s) encontrado(s)';
+
+                let html = '<table><thead><tr><th>ID</th><th>Nome</th><th>E-mail</th><th>Cadastro</th></tr></thead><tbody>';
+                dados.usuarios.forEach(u => {
+                    const data = new Date(u.criado_em).toLocaleDateString('pt-BR') + ' ' + new Date(u.criado_em).toLocaleTimeString('pt-BR');
+                    html += `<tr><td>${u.id}</td><td>${u.nome}</td><td>${u.email}</td><td>${data}</td></tr>`;
+                });
+                html += '</tbody></table>';
+                document.getElementById('tabela').innerHTML = html;
+            } catch (err) {
+                document.getElementById('counter').textContent = '';
+                document.getElementById('tabela').innerHTML = '<p class="empty">Erro ao carregar usuários.</p>';
+            }
+        }
+
+        carregarUsuarios();
+    </script>
 </body>
 </html>
