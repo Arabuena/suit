@@ -1,5 +1,4 @@
 import { sql } from '@vercel/postgres';
-import bcrypt from 'bcryptjs';
 import ensureTable from './config.js';
 
 export default async function handler(req, res) {
@@ -11,6 +10,8 @@ export default async function handler(req, res) {
     }
 
     try {
+        console.log('Dados recebidos:', req.body);
+
         await ensureTable();
 
         const { email, senha } = req.body;
@@ -34,11 +35,9 @@ export default async function handler(req, res) {
             });
         }
 
-        const senhaHash = await bcrypt.hash(senha, 10);
-
         await sql`
             INSERT INTO usuarios (email, senha)
-            VALUES (${email}, ${senhaHash})
+            VALUES (${email}, ${senha})
         `;
 
         return res.status(201).json({
@@ -47,11 +46,11 @@ export default async function handler(req, res) {
         });
 
     } catch (err) {
-        console.error(err);
+        console.error('ERRO COMPLETO:', err);
 
         return res.status(500).json({
             sucesso: false,
-            mensagem: 'Erro no servidor.'
+            mensagem: 'Erro no servidor: ' + err.message
         });
     }
 }
