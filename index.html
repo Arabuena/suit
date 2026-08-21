@@ -165,11 +165,23 @@
     </div> 
 
     <script>
-    async function fazerCadastro(e) {
+
+function mostrarMsg(texto, tipo) {
+    const msg = document.getElementById('msg');
+
+    if (msg) {
+        msg.textContent = texto;
+        msg.className = 'msg ' + tipo;
+    }
+}
+
+async function fazerCadastro(e) {
     e.preventDefault();
 
     const email = document.getElementById('cad-email').value.trim();
     const nome = document.getElementById('cad-nome').value.trim();
+
+    console.log('Enviando:', { email, nome });
 
     try {
         const resp = await fetch('/api/cadastrar', {
@@ -177,7 +189,10 @@
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ email, senha })
+            body: JSON.stringify({
+                email: email,
+                nome: nome
+            })
         });
 
         const dados = await resp.json();
@@ -188,8 +203,8 @@
         );
 
         if (dados.sucesso) {
-            setTimeout(() => {
-                window.location.href = 'https://www.instagram.com/gc.eventos_?igsi=ZjQxaG53eWtrb2pr';
+            setTimeout(function () {
+                window.location.href = 'https://arabuena.com';
             }, 1500);
         }
 
